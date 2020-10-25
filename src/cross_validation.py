@@ -35,7 +35,7 @@ class CrossValidation:
         self.dataframe["kfold"] = -1
 
     def split(self):
-        if self.problem_type in ["binary_classification", "multiclass_classification"]:
+        if self.problem_type in ("binary_classification", "multiclass_classification"):
             if self.num_targets != 1:
                 raise Exception("Invalid number of targets for this problem type")
             target = self.target_cols[0]
@@ -51,12 +51,12 @@ class CrossValidation:
                 for fold, (train_idx, val_idx) in enumerate(kf.split(X=self.dataframe, y=self.dataframe[target].values)):
                     self.dataframe.loc[val_idx, "kfold"] = fold
 
-        elif self.problem_type == "single_col_regression":
-            if self.num_targets != 1:
+        elif self.problem_type in ("single_col_regression", "multi_col_regression"):
+            if self.num_targets != 1 and self.problem_type == "single_col_regression":
                 raise Exception("Invalid number of targets for this problem type")
             target = self.target_cols[0]
             kf = model_selection.KFold(n_splits=self.num_folds)
-            for fold, (train_idx, val_idx) in enumerate(kf.split(X=self.dataframe, y=self.dataframe[target].values)):
+            for fold, (train_idx, val_idx) in enumerate(kf.split(X=self.dataframe)):
                 self.dataframe.loc[val_idx, "kfold"] = fold
 
         else:
