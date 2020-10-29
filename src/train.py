@@ -8,7 +8,7 @@ def run(fold):
     df = pd.read_csv("../input/train_folds.csv")
 
     features = [
-        f for  in df.columns if f not in ("id", "target", "kfold")
+        f for f in df.columns if f not in ("id", "target", "kfold")
     ]
 
     for col in features:
@@ -31,7 +31,7 @@ def run(fold):
     clf = lgb.LGBMClassifier()
     clf.fit(xtrain, ytrain)
     pred = clf.predict_proba(xvalid)[:, 1]
-    auc = metrics.roc_auc_score(yvalid, preds)
+    auc = metrics.roc_auc_score(yvalid, pred)
 
     print(f"fold={fold}, auc={auc}")
     #df_valid.loc[:, "lgb_pred"] = pred
